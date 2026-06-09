@@ -4,6 +4,7 @@ import { isLocale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/dictionaries';
 import { createClient } from '@/lib/supabase/server';
 import { ReportDialog } from '@/components/report-dialog';
+import { getSiteUrl } from '@/lib/site-url';
 import type { PublicationWithRelations } from '@/types/db';
 
 const SELECT =
@@ -29,7 +30,7 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   const pub = await getPublication(slug);
   if (!pub) return { title: 'Introuvable' };
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+  const siteUrl = getSiteUrl();
   return {
     title: pub.title,
     description: pub.abstract ?? undefined,
@@ -58,7 +59,7 @@ export default async function PublicationDetailPage({
   const uni = pub.universities?.name;
   const author = pub.profiles?.full_name;
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+  const siteUrl = getSiteUrl();
   const shareUrl = `${siteUrl}/${locale}/publications/${pub.slug}`;
   const waHref = `https://wa.me/?text=${encodeURIComponent(`${pub.title} — ${shareUrl}`)}`;
 

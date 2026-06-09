@@ -6,6 +6,7 @@ import { getDictionary } from '@/i18n/dictionaries';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { PWARegister } from '@/components/pwa-register';
+import { getSiteUrl } from '@/lib/site-url';
 
 // The shared header reflects per-user auth state, so render localized routes
 // per request rather than caching them statically. Revisit with finer-grained
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
   },
   description:
     'Publiez, découvrez et partagez les mémoires, articles et travaux académiques de Bukavu et du Sud-Kivu.',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
+  metadataBase: new URL(getSiteUrl()),
   icons: {
     icon: '/maarifa_logo.png',
     apple: '/maarifa_logo.png',
