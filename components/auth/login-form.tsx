@@ -53,6 +53,15 @@ export function LoginForm({ locale, dict }: { locale: Locale; dict: Dictionary }
 
       {error && <p className="text-sm text-clay">{error}</p>}
 
+      <div className="text-right">
+        <Link
+          href={`/${locale}/mot-de-passe-oublie`}
+          className="text-sm text-lake hover:underline"
+        >
+          {dict.auth.forgotPassword}
+        </Link>
+      </div>
+
       <button
         type="submit"
         disabled={loading}

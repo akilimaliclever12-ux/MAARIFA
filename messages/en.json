@@ -36,7 +36,16 @@
     "forgotPassword": "Forgot your password?",
     "checkEmail": "Check your inbox to confirm your account.",
     "errorInvalid": "Invalid credentials. Please try again.",
-    "errorGeneric": "Something went wrong. Please try again."
+    "errorGeneric": "Something went wrong. Please try again.",
+    "forgotTitle": "Reset your password",
+    "forgotInstruction": "Enter your email. We'll send you a link to reset your password.",
+    "sendResetLink": "Send link",
+    "resetSent": "If an account exists, a reset email has been sent.",
+    "resetTitle": "New password",
+    "newPassword": "New password",
+    "updatePassword": "Update password",
+    "passwordUpdated": "Password updated. You can now log in.",
+    "backToLogin": "Back to login"
   },
   "publication": {
     "download": "Download",

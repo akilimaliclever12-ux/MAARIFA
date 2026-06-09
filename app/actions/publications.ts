@@ -6,6 +6,30 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { getCurrentUser, isStaffRole } from '@/lib/auth/session';
 import { publicationCreateSchema, type PublicationCreateInput } from '@/lib/validation/publication';
 import { publicationSlug, slugify } from '@/lib/utils/slug';
+import {
+  sendEmail,
+  emailPublicationApproved,
+  emailPublicationRejected,
+} from '@/lib/email/resend';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+
+// Fetch owner email + title/slug for notification emails (admin client).
+async function getOwnerContact(admin: ReturnType<typeof createAdminClient>, publicationId: string) {
+  const { data } = await admin
+    .from('publications')
+    .select('title, slug, profiles!publications_owner_id_fkey ( email, full_name )')
+    .eq('id', publicationId)
+    .maybeSingle();
+  const profile = (data as { profiles?: { email: string | null; full_name: string | null } } | null)
+    ?.profiles;
+  return {
+    title: (data as { title?: string } | null)?.title ?? '',
+    slug: (data as { slug?: string } | null)?.slug ?? '',
+    email: profile?.email ?? null,
+    fullName: profile?.full_name ?? '',
+  };
+}
 
 type ActionResult = { ok: true; slug?: string } | { ok: false; error: string };
 
@@ -103,6 +127,7 @@ export async function approvePublication(publicationId: string): Promise<ActionR
   if (!user || !isStaffRole(user.role)) return { ok: false, error: 'Action non autorisée.' };
 
   const admin = createAdminClient();
+  const contact = await getOwnerContact(admin, publicationId);
   const { error } = await admin
     .from('publications')
     .update({ status: 'published', published_at: new Date().toISOString(), rejection_reason: null })
@@ -116,6 +141,15 @@ export async function approvePublication(publicationId: string): Promise<ActionR
     entity_type: 'publication',
     entity_id: publicationId,
   });
+
+  if (contact.email) {
+    const tpl = emailPublicationApproved({
+      fullName: contact.fullName,
+      title: contact.title,
+      url: `${SITE_URL}/fr/publications/${contact.slug}`,
+    });
+    await sendEmail({ to: contact.email, ...tpl });
+  }
 
   revalidatePath('/[locale]/admin/moderation', 'page');
   return { ok: true };
@@ -133,6 +167,7 @@ export async function rejectPublication(
   if (trimmed.length < 3) return { ok: false, error: 'Motif requis.' };
 
   const admin = createAdminClient();
+  const contact = await getOwnerContact(admin, publicationId);
   const { error } = await admin
     .from('publications')
     .update({ status: 'rejected', rejection_reason: trimmed })
@@ -147,6 +182,15 @@ export async function rejectPublication(
     entity_id: publicationId,
     metadata: { reason: trimmed },
   });
+
+  if (contact.email) {
+    const tpl = emailPublicationRejected({
+      fullName: contact.fullName,
+      title: contact.title,
+      reason: trimmed,
+    });
+    await sendEmail({ to: contact.email, ...tpl });
+  }
 
   revalidatePath('/[locale]/admin/moderation', 'page');
   return { ok: true };

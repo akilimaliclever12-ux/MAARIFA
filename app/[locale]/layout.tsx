@@ -1,10 +1,11 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { notFound } from 'next/navigation';
 import '../globals.css';
 import { isLocale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/dictionaries';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
+import { PWARegister } from '@/components/pwa-register';
 
 // The shared header reflects per-user auth state, so render localized routes
 // per request rather than caching them statically. Revisit with finer-grained
@@ -19,6 +20,16 @@ export const metadata: Metadata = {
   description:
     'Publiez, découvrez et partagez les mémoires, articles et travaux académiques de Bukavu et du Sud-Kivu.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
+  icons: {
+    icon: '/maarifa_logo.png',
+    apple: '/maarifa_logo.png',
+    shortcut: '/maarifa_logo.png',
+  },
+  appleWebApp: { capable: true, title: 'Maarifa', statusBarStyle: 'default' },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#0F4C81',
 };
 
 export default async function LocaleLayout({
@@ -47,6 +58,7 @@ export default async function LocaleLayout({
           {children}
         </main>
         <SiteFooter locale={locale} dict={dict} />
+        <PWARegister />
       </body>
     </html>
   );

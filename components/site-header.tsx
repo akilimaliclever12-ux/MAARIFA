@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/i18n/dictionaries';
 import { getCurrentUser, isStaffRole } from '@/lib/auth/session';
@@ -12,8 +13,16 @@ export async function SiteHeader({ locale, dict }: { locale: Locale; dict: Dicti
   return (
     <header className="border-b border-stone/15 bg-white">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
-        <Link href={`/${locale}`} className="text-xl font-semibold text-lake">
-          {dict.app.name}
+        <Link href={`/${locale}`} className="flex items-center gap-2">
+          <Image
+            src="/maarifa_logo.png"
+            alt={dict.app.name}
+            width={258}
+            height={248}
+            priority
+            className="h-9 w-9 object-contain"
+          />
+          <span className="text-xl font-semibold text-lake">{dict.app.name}</span>
         </Link>
 
         <nav className="flex items-center gap-3 text-sm">

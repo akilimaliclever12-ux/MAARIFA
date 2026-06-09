@@ -3,21 +3,12 @@ import { locales, defaultLocale, isLocale } from '@/i18n/config';
 import { updateSession } from '@/lib/supabase/middleware';
 
 function detectLocale(request: NextRequest): string {
-  // 1. Explicit cookie preference.
+  // French is the default. We only honor an explicit choice the user made via
+  // the language switcher (stored in the NEXT_LOCALE cookie). We intentionally
+  // do NOT auto-switch on Accept-Language, so first-time visitors always start
+  // in French.
   const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value;
   if (isLocale(cookieLocale)) return cookieLocale;
-
-  // 2. Accept-Language header (first matching locale).
-  const header = request.headers.get('accept-language');
-  if (header) {
-    const preferred = header
-      .split(',')
-      .map((part) => part.split(';')[0].trim().slice(0, 2).toLowerCase());
-    const match = preferred.find((lang) => (locales as readonly string[]).includes(lang));
-    if (match) return match;
-  }
-
-  // 3. Default.
   return defaultLocale;
 }
 

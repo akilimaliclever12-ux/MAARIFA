@@ -14,6 +14,21 @@ body {
   @apply bg-mist text-ink antialiased;
 }
 
+/* Faint Maarifa logo watermark behind every page (z-index -1 keeps it under
+   all content; pointer-events none so it never blocks taps). */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: url('/maarifa_logo.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: min(55%, 420px);
+  opacity: 0.05;
+  pointer-events: none;
+}
+
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,
