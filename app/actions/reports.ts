@@ -3,7 +3,6 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
-import { createAdminClient } from '@/lib/supabase/admin';
 import { getCurrentUser, isStaffRole } from '@/lib/auth/session';
 
 type ActionResult = { ok: true } | { ok: false; error: string };
@@ -47,11 +46,13 @@ export async function updateReportStatus(
   const user = await getCurrentUser();
   if (!user || !isStaffRole(user.role)) return { ok: false, error: 'Action non autorisée.' };
 
-  const admin = createAdminClient();
-  const { error } = await admin.from('reports').update({ status }).eq('id', reportId);
+  // Staff session; reports_staff RLS policy permits the update.
+  const supabase = await createClient();
+  const { error } = await supabase.from('reports').update({ status }).eq('id', reportId);
   if (error) return { ok: false, error: 'Échec de la mise à jour.' };
 
-  await admin.from('audit_logs').insert({
+  // Best-effort audit log.
+  await supabase.from('audit_logs').insert({
     actor_id: user.id,
     action: `report.${status}`,
     entity_type: 'report',

@@ -2,7 +2,6 @@
 
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
-import { createAdminClient } from '@/lib/supabase/admin';
 import { getCurrentUser, isStaffRole } from '@/lib/auth/session';
 import { publicationCreateSchema, type PublicationCreateInput } from '@/lib/validation/publication';
 import { publicationSlug, slugify } from '@/lib/utils/slug';
@@ -15,9 +14,12 @@ import { getSiteUrl } from '@/lib/site-url';
 
 const SITE_URL = getSiteUrl();
 
-// Fetch owner email + title/slug for notification emails (admin client).
-async function getOwnerContact(admin: ReturnType<typeof createAdminClient>, publicationId: string) {
-  const { data } = await admin
+type SupabaseServer = Awaited<ReturnType<typeof createClient>>;
+
+// Fetch owner email + title/slug for notification emails. Uses the caller's
+// (staff) session — profiles are world-readable and staff can read all publications.
+async function getOwnerContact(db: SupabaseServer, publicationId: string) {
+  const { data } = await db
     .from('publications')
     .select('title, slug, profiles!publications_owner_id_fkey ( email, full_name )')
     .eq('id', publicationId)
@@ -127,16 +129,18 @@ export async function approvePublication(publicationId: string): Promise<ActionR
   const user = await getCurrentUser();
   if (!user || !isStaffRole(user.role)) return { ok: false, error: 'Action non autorisée.' };
 
-  const admin = createAdminClient();
-  const contact = await getOwnerContact(admin, publicationId);
-  const { error } = await admin
+  // Runs under the staff member's session; the pub_staff_all RLS policy allows it.
+  const supabase = await createClient();
+  const contact = await getOwnerContact(supabase, publicationId);
+  const { error } = await supabase
     .from('publications')
     .update({ status: 'published', published_at: new Date().toISOString(), rejection_reason: null })
     .eq('id', publicationId)
     .eq('status', 'pending');
   if (error) return { ok: false, error: "Échec de l'approbation." };
 
-  await admin.from('audit_logs').insert({
+  // Best-effort audit log (ignored if the insert policy isn't present).
+  await supabase.from('audit_logs').insert({
     actor_id: user.id,
     action: 'publication.approve',
     entity_type: 'publication',
@@ -167,16 +171,16 @@ export async function rejectPublication(
   const trimmed = reason.trim();
   if (trimmed.length < 3) return { ok: false, error: 'Motif requis.' };
 
-  const admin = createAdminClient();
-  const contact = await getOwnerContact(admin, publicationId);
-  const { error } = await admin
+  const supabase = await createClient();
+  const contact = await getOwnerContact(supabase, publicationId);
+  const { error } = await supabase
     .from('publications')
     .update({ status: 'rejected', rejection_reason: trimmed })
     .eq('id', publicationId)
     .eq('status', 'pending');
   if (error) return { ok: false, error: 'Échec du rejet.' };
 
-  await admin.from('audit_logs').insert({
+  await supabase.from('audit_logs').insert({
     actor_id: user.id,
     action: 'publication.reject',
     entity_type: 'publication',
@@ -202,8 +206,10 @@ export async function getReviewUrl(storagePath: string): Promise<ActionResult & 
   const user = await getCurrentUser();
   if (!user || !isStaffRole(user.role)) return { ok: false, error: 'Action non autorisée.' };
 
-  const admin = createAdminClient();
-  const { data, error } = await admin.storage
+  // Staff can read objects in the publications bucket (storage RLS), so the
+  // session client can sign the URL — no service-role key required.
+  const supabase = await createClient();
+  const { data, error } = await supabase.storage
     .from('publications')
     .createSignedUrl(storagePath, 120); // 2 minutes
   if (error || !data) return { ok: false, error: 'Lien indisponible.' };
