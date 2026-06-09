@@ -107,6 +107,55 @@
     "save": "Save",
     "success": "Profile updated."
   },
+  "report": {
+    "button": "Report",
+    "title": "Report this publication",
+    "reasonLabel": "Reason",
+    "plagiat": "Plagiarism",
+    "contenu_inapproprie": "Inappropriate content",
+    "droit_auteur": "Copyright violation",
+    "spam": "Spam",
+    "autre": "Other",
+    "detailsLabel": "Details (optional)",
+    "submit": "Send report",
+    "cancel": "Cancel",
+    "success": "Thank you. Your report has been sent.",
+    "error": "Failed to send. Please try again."
+  },
+  "admin": {
+    "title": "Dashboard",
+    "published": "Published",
+    "pending": "Pending",
+    "users": "Users",
+    "downloads": "Downloads",
+    "openReports": "Open reports",
+    "latest": "Latest submissions",
+    "reports": "Reports",
+    "noReports": "No open reports.",
+    "resolve": "Resolve",
+    "dismiss": "Dismiss",
+    "openModeration": "Moderation queue",
+    "viewedPublication": "Publication"
+  },
+  "about": {
+    "title": "About Maarifa",
+    "intro": "Maarifa preserves and shares South Kivu's academic knowledge. Our mission: so that local intellectual production is never lost again.",
+    "howTitle": "How to publish",
+    "step1Title": "1. Create an account",
+    "step1": "Sign up for free with your email address.",
+    "step2Title": "2. Submit your work",
+    "step2": "Upload your PDF and fill in the details (title, abstract, university, keywords).",
+    "step3Title": "3. Share",
+    "step3": "Once approved, your work is visible and shareable via a WhatsApp link.",
+    "cta": "Publish my work"
+  },
+  "errors": {
+    "notFoundTitle": "Page not found",
+    "notFoundText": "This page doesn't exist or has moved.",
+    "genericTitle": "Something went wrong",
+    "retry": "Try again",
+    "home": "Back to home"
+  },
   "browse": {
     "searchPlaceholder": "Search by title or abstract…",
     "allTypes": "All types",

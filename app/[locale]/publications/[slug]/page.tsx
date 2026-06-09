@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/dictionaries';
 import { createClient } from '@/lib/supabase/server';
+import { ReportDialog } from '@/components/report-dialog';
 import type { PublicationWithRelations } from '@/types/db';
 
 const SELECT =
@@ -110,6 +111,10 @@ export default async function PublicationDetailPage({
         {pub.view_count} {dict.publication.views} · {pub.download_count}{' '}
         {dict.publication.downloads}
       </p>
+
+      <div className="border-t border-stone/10 pt-4">
+        <ReportDialog publicationId={pub.id} dict={dict} />
+      </div>
     </article>
   );
 }

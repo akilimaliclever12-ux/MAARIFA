@@ -1,16 +1,12 @@
 import Link from 'next/link';
 import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/i18n/dictionaries';
-import { createClient } from '@/lib/supabase/server';
+import { getCurrentUser, isStaffRole } from '@/lib/auth/session';
 import { signOut } from '@/app/actions/auth';
 import { LanguageSwitcher } from '@/components/language-switcher';
 
 export async function SiteHeader({ locale, dict }: { locale: Locale; dict: Dictionary }) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const user = await getCurrentUser();
   const signOutWithLocale = signOut.bind(null, locale);
 
   return (
@@ -27,11 +23,19 @@ export async function SiteHeader({ locale, dict }: { locale: Locale; dict: Dicti
 
           {user ? (
             <>
+              {isStaffRole(user.role) && (
+                <Link
+                  href={`/${locale}/admin`}
+                  className="hidden text-[#8a5a00] hover:underline sm:inline"
+                >
+                  {dict.admin.title}
+                </Link>
+              )}
               <Link
                 href={`/${locale}/espace`}
                 className="rounded-md bg-lake px-3 py-1.5 font-medium text-white hover:bg-lake-dark"
               >
-                {dict.nav.publish}
+                {dict.nav.dashboard}
               </Link>
               <form action={signOutWithLocale}>
                 <button type="submit" className="text-stone hover:text-clay">

@@ -107,6 +107,55 @@
     "save": "Enregistrer",
     "success": "Profil mis à jour."
   },
+  "report": {
+    "button": "Signaler",
+    "title": "Signaler cette publication",
+    "reasonLabel": "Motif",
+    "plagiat": "Plagiat",
+    "contenu_inapproprie": "Contenu inapproprié",
+    "droit_auteur": "Violation de droit d'auteur",
+    "spam": "Spam",
+    "autre": "Autre",
+    "detailsLabel": "Détails (optionnel)",
+    "submit": "Envoyer le signalement",
+    "cancel": "Annuler",
+    "success": "Merci. Votre signalement a été envoyé.",
+    "error": "Échec de l'envoi. Réessayez."
+  },
+  "admin": {
+    "title": "Tableau de bord",
+    "published": "Publiées",
+    "pending": "En attente",
+    "users": "Utilisateurs",
+    "downloads": "Téléchargements",
+    "openReports": "Signalements ouverts",
+    "latest": "Dernières soumissions",
+    "reports": "Signalements",
+    "noReports": "Aucun signalement ouvert.",
+    "resolve": "Traiter",
+    "dismiss": "Rejeter",
+    "openModeration": "File de modération",
+    "viewedPublication": "Publication"
+  },
+  "about": {
+    "title": "À propos de Maarifa",
+    "intro": "Maarifa préserve et partage le savoir académique du Sud-Kivu. Notre mission : que la production intellectuelle locale ne se perde plus jamais.",
+    "howTitle": "Comment publier",
+    "step1Title": "1. Créez un compte",
+    "step1": "Inscrivez-vous gratuitement avec votre adresse e-mail.",
+    "step2Title": "2. Déposez votre travail",
+    "step2": "Téléversez votre PDF et renseignez les informations (titre, résumé, université, mots-clés).",
+    "step3Title": "3. Partagez",
+    "step3": "Après validation, votre travail est visible et partageable par lien WhatsApp.",
+    "cta": "Publier mon travail"
+  },
+  "errors": {
+    "notFoundTitle": "Page introuvable",
+    "notFoundText": "Cette page n'existe pas ou a été déplacée.",
+    "genericTitle": "Une erreur est survenue",
+    "retry": "Réessayer",
+    "home": "Retour à l'accueil"
+  },
   "browse": {
     "searchPlaceholder": "Rechercher par titre ou résumé…",
     "allTypes": "Tous les types",
