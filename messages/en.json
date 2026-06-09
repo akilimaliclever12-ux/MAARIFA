@@ -1,0 +1,134 @@
+{
+  "app": {
+    "name": "Maarifa",
+    "tagline": "South Kivu's knowledge, accessible to all."
+  },
+  "nav": {
+    "home": "Home",
+    "browse": "Browse",
+    "search": "Search",
+    "publish": "Publish",
+    "login": "Log in",
+    "signup": "Sign up",
+    "logout": "Log out",
+    "dashboard": "My space",
+    "profile": "My profile"
+  },
+  "home": {
+    "heroTitle": "The digital memory of South Kivu's research",
+    "heroSubtitle": "Publish, discover, and share theses, papers, and academic work from Bukavu and South Kivu.",
+    "ctaPublish": "Publish a work",
+    "ctaBrowse": "Browse publications",
+    "recent": "Recent publications",
+    "popular": "Most viewed",
+    "empty": "No publications yet. Be the first to publish!"
+  },
+  "auth": {
+    "loginTitle": "Log in",
+    "signupTitle": "Create an account",
+    "fullName": "Full name",
+    "email": "Email address",
+    "password": "Password",
+    "loginButton": "Log in",
+    "signupButton": "Create my account",
+    "noAccount": "Don't have an account yet?",
+    "haveAccount": "Already have an account?",
+    "forgotPassword": "Forgot your password?",
+    "checkEmail": "Check your inbox to confirm your account.",
+    "errorInvalid": "Invalid credentials. Please try again.",
+    "errorGeneric": "Something went wrong. Please try again."
+  },
+  "publication": {
+    "download": "Download",
+    "share": "Share on WhatsApp",
+    "save": "Save",
+    "saved": "Saved",
+    "views": "views",
+    "downloads": "downloads",
+    "abstract": "Abstract",
+    "authors": "Author(s)",
+    "keywords": "Keywords",
+    "university": "University",
+    "year": "Year",
+    "type": "Type",
+    "language": "Language",
+    "by": "by"
+  },
+  "publish": {
+    "title": "Publish a work",
+    "fileLabel": "PDF file (max 25 MB)",
+    "fileHelp": "Only PDF files are accepted.",
+    "titleLabel": "Title",
+    "abstractLabel": "Abstract",
+    "typeLabel": "Document type",
+    "universityLabel": "University",
+    "categoryLabel": "Category",
+    "yearLabel": "Year",
+    "languageLabel": "Document language",
+    "keywordsLabel": "Keywords (comma-separated)",
+    "coAuthorsLabel": "Co-authors (one per line, optional)",
+    "attestation": "I certify that I am the author of this work or hold the rights to publish it.",
+    "saveDraft": "Save draft",
+    "submit": "Submit for review",
+    "none": "— None —",
+    "successDraft": "Draft saved.",
+    "successSubmit": "Submitted for review. You'll be notified after it's checked.",
+    "errorFileType": "The file must be a PDF.",
+    "errorFileSize": "The file exceeds 25 MB.",
+    "errorFileRequired": "Please choose a PDF file.",
+    "uploading": "Uploading…"
+  },
+  "dashboard": {
+    "myPublications": "My publications",
+    "newPublication": "Publish a work",
+    "editProfile": "Edit my profile",
+    "moderation": "Moderation",
+    "noPublications": "You don't have any publications yet.",
+    "openModeration": "Moderation queue"
+  },
+  "status": {
+    "draft": "Draft",
+    "pending": "Pending",
+    "published": "Published",
+    "rejected": "Rejected"
+  },
+  "moderation": {
+    "title": "Moderation queue",
+    "empty": "No publications pending review.",
+    "viewPdf": "View PDF",
+    "approve": "Approve",
+    "reject": "Reject",
+    "reasonPlaceholder": "Reason for rejection…",
+    "confirmReject": "Confirm rejection",
+    "cancel": "Cancel"
+  },
+  "profileEdit": {
+    "title": "Edit my profile",
+    "save": "Save",
+    "success": "Profile updated."
+  },
+  "browse": {
+    "searchPlaceholder": "Search by title or abstract…",
+    "allTypes": "All types",
+    "allUniversities": "All universities",
+    "allCategories": "All categories",
+    "yearPlaceholder": "Year",
+    "apply": "Search",
+    "reset": "Reset",
+    "resultsOne": "1 result",
+    "resultsMany": "{count} results",
+    "noResults": "No results. Try other keywords or filters.",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "common": {
+    "loading": "Loading…",
+    "search": "Search a thesis, paper, or author…",
+    "viewAll": "View all",
+    "back": "Back"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "mission": "Preserving and sharing South Kivu's academic knowledge."
+  }
+}

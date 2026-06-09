@@ -1,0 +1,134 @@
+{
+  "app": {
+    "name": "Maarifa",
+    "tagline": "Le savoir du Sud-Kivu, accessible à tous."
+  },
+  "nav": {
+    "home": "Accueil",
+    "browse": "Explorer",
+    "search": "Rechercher",
+    "publish": "Publier",
+    "login": "Se connecter",
+    "signup": "S'inscrire",
+    "logout": "Se déconnecter",
+    "dashboard": "Mon espace",
+    "profile": "Mon profil"
+  },
+  "home": {
+    "heroTitle": "La mémoire numérique de la recherche du Sud-Kivu",
+    "heroSubtitle": "Publiez, découvrez et partagez les mémoires, articles et travaux académiques de Bukavu et du Sud-Kivu.",
+    "ctaPublish": "Publier un travail",
+    "ctaBrowse": "Explorer les publications",
+    "recent": "Publications récentes",
+    "popular": "Les plus consultées",
+    "empty": "Aucune publication pour le moment. Soyez le premier à publier !"
+  },
+  "auth": {
+    "loginTitle": "Se connecter",
+    "signupTitle": "Créer un compte",
+    "fullName": "Nom complet",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
+    "loginButton": "Se connecter",
+    "signupButton": "Créer mon compte",
+    "noAccount": "Pas encore de compte ?",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "forgotPassword": "Mot de passe oublié ?",
+    "checkEmail": "Vérifiez votre boîte e-mail pour confirmer votre compte.",
+    "errorInvalid": "Identifiants invalides. Réessayez.",
+    "errorGeneric": "Une erreur est survenue. Réessayez."
+  },
+  "publication": {
+    "download": "Télécharger",
+    "share": "Partager sur WhatsApp",
+    "save": "Enregistrer",
+    "saved": "Enregistré",
+    "views": "vues",
+    "downloads": "téléchargements",
+    "abstract": "Résumé",
+    "authors": "Auteur(s)",
+    "keywords": "Mots-clés",
+    "university": "Université",
+    "year": "Année",
+    "type": "Type",
+    "language": "Langue",
+    "by": "par"
+  },
+  "publish": {
+    "title": "Publier un travail",
+    "fileLabel": "Fichier PDF (max 25 Mo)",
+    "fileHelp": "Seuls les fichiers PDF sont acceptés.",
+    "titleLabel": "Titre",
+    "abstractLabel": "Résumé",
+    "typeLabel": "Type de document",
+    "universityLabel": "Université",
+    "categoryLabel": "Catégorie",
+    "yearLabel": "Année",
+    "languageLabel": "Langue du document",
+    "keywordsLabel": "Mots-clés (séparés par des virgules)",
+    "coAuthorsLabel": "Co-auteurs (un par ligne, optionnel)",
+    "attestation": "Je certifie être l'auteur de ce travail ou disposer des droits pour le publier.",
+    "saveDraft": "Enregistrer le brouillon",
+    "submit": "Soumettre pour modération",
+    "none": "— Aucune —",
+    "successDraft": "Brouillon enregistré.",
+    "successSubmit": "Soumis pour modération. Vous serez notifié après examen.",
+    "errorFileType": "Le fichier doit être un PDF.",
+    "errorFileSize": "Le fichier dépasse 25 Mo.",
+    "errorFileRequired": "Veuillez choisir un fichier PDF.",
+    "uploading": "Envoi en cours…"
+  },
+  "dashboard": {
+    "myPublications": "Mes publications",
+    "newPublication": "Publier un travail",
+    "editProfile": "Modifier mon profil",
+    "moderation": "Modération",
+    "noPublications": "Vous n'avez pas encore de publication.",
+    "openModeration": "File de modération"
+  },
+  "status": {
+    "draft": "Brouillon",
+    "pending": "En attente",
+    "published": "Publié",
+    "rejected": "Rejeté"
+  },
+  "moderation": {
+    "title": "File de modération",
+    "empty": "Aucune publication en attente.",
+    "viewPdf": "Voir le PDF",
+    "approve": "Approuver",
+    "reject": "Rejeter",
+    "reasonPlaceholder": "Motif du rejet…",
+    "confirmReject": "Confirmer le rejet",
+    "cancel": "Annuler"
+  },
+  "profileEdit": {
+    "title": "Modifier mon profil",
+    "save": "Enregistrer",
+    "success": "Profil mis à jour."
+  },
+  "browse": {
+    "searchPlaceholder": "Rechercher par titre ou résumé…",
+    "allTypes": "Tous les types",
+    "allUniversities": "Toutes les universités",
+    "allCategories": "Toutes les catégories",
+    "yearPlaceholder": "Année",
+    "apply": "Rechercher",
+    "reset": "Réinitialiser",
+    "resultsOne": "1 résultat",
+    "resultsMany": "{count} résultats",
+    "noResults": "Aucun résultat. Essayez d'autres mots-clés ou filtres.",
+    "previous": "Précédent",
+    "next": "Suivant"
+  },
+  "common": {
+    "loading": "Chargement…",
+    "search": "Rechercher un mémoire, un article, un auteur…",
+    "viewAll": "Voir tout",
+    "back": "Retour"
+  },
+  "footer": {
+    "rights": "Tous droits réservés.",
+    "mission": "Préserver et partager le savoir académique du Sud-Kivu."
+  }
+}
