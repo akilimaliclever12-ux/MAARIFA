@@ -114,7 +114,31 @@
   "profileEdit": {
     "title": "Edit my profile",
     "save": "Save",
-    "success": "Profile updated."
+    "success": "Profile updated.",
+    "avatar": "Profile picture",
+    "avatarChange": "Change picture",
+    "uploading": "Uploading…"
+  },
+  "social": {
+    "follow": "Follow",
+    "following": "Following",
+    "followers": "followers",
+    "follows": "following",
+    "like": "Like",
+    "liked": "Liked",
+    "likes": "likes",
+    "comments": "Comments",
+    "commentPlaceholder": "Write a comment…",
+    "send": "Post",
+    "delete": "Delete",
+    "noComments": "No comments yet.",
+    "loginToComment": "Log in to comment.",
+    "loginToInteract": "Log in to like or follow."
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "accept": "I accept the terms and conditions",
+    "link": "Terms and Conditions"
   },
   "report": {
     "button": "Report",

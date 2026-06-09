@@ -3,9 +3,20 @@ import { notFound } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/dictionaries';
 import { createClient } from '@/lib/supabase/server';
+import { getCurrentUser, isStaffRole } from '@/lib/auth/session';
 import { ReportDialog } from '@/components/report-dialog';
+import { LikeButton } from '@/components/social/like-button';
+import { Comments, type CommentItem } from '@/components/social/comments';
 import { getSiteUrl } from '@/lib/site-url';
 import type { PublicationWithRelations } from '@/types/db';
+
+interface CommentRow {
+  id: string;
+  body: string;
+  created_at: string;
+  author_id: string;
+  profiles: { full_name: string; slug: string } | null;
+}
 
 const SELECT =
   'id, title, slug, abstract, type, year, language, view_count, download_count, status, ' +
@@ -63,6 +74,42 @@ export default async function PublicationDetailPage({
   const shareUrl = `${siteUrl}/${locale}/publications/${pub.slug}`;
   const waHref = `https://wa.me/?text=${encodeURIComponent(`${pub.title} — ${shareUrl}`)}`;
 
+  // Social data: current user, like state/count, comments.
+  const supabase = await createClient();
+  const user = await getCurrentUser();
+  const isStaff = !!user && isStaffRole(user.role);
+
+  const { count: likeCount } = await supabase
+    .from('likes')
+    .select('user_id', { count: 'exact', head: true })
+    .eq('publication_id', pub.id);
+
+  let liked = false;
+  if (user) {
+    const { data } = await supabase
+      .from('likes')
+      .select('user_id')
+      .eq('publication_id', pub.id)
+      .eq('user_id', user.id)
+      .maybeSingle();
+    liked = !!data;
+  }
+
+  const { data: rawComments } = await supabase
+    .from('comments')
+    .select('id, body, created_at, author_id, profiles!comments_author_id_fkey ( full_name, slug )')
+    .eq('publication_id', pub.id)
+    .order('created_at', { ascending: true });
+
+  const comments: CommentItem[] = ((rawComments ?? []) as unknown as CommentRow[]).map((c) => ({
+    id: c.id,
+    body: c.body,
+    created_at: c.created_at,
+    authorName: c.profiles?.full_name ?? '—',
+    authorSlug: c.profiles?.slug ?? '',
+    canDelete: !!user && (user.id === c.author_id || isStaff),
+  }));
+
   return (
     <article className="mx-auto max-w-3xl space-y-6 py-4">
       <header className="space-y-2">
@@ -106,12 +153,24 @@ export default async function PublicationDetailPage({
         >
           {dict.publication.share}
         </a>
+        <LikeButton
+          publicationId={pub.id}
+          initialCount={likeCount ?? 0}
+          initialLiked={liked}
+          isAuthed={!!user}
+          locale={locale}
+          dict={dict}
+        />
       </div>
 
       <p className="text-xs text-stone">
         {pub.view_count} {dict.publication.views} · {pub.download_count}{' '}
         {dict.publication.downloads}
       </p>
+
+      <div className="border-t border-stone/10 pt-6">
+        <Comments publicationId={pub.id} comments={comments} isAuthed={!!user} locale={locale} dict={dict} />
+      </div>
 
       <div className="border-t border-stone/10 pt-4">
         <ReportDialog publicationId={pub.id} dict={dict} />

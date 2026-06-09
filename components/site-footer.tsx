@@ -16,6 +16,9 @@ export function SiteFooter({ locale, dict }: { locale: Locale; dict: Dictionary 
           <Link href={`/${locale}/a-propos`} className="hover:text-lake">
             {dict.about.title}
           </Link>
+          <Link href={`/${locale}/conditions`} className="hover:text-lake">
+            {dict.terms.link}
+          </Link>
         </nav>
         <p className="mt-3">
           © {year} {dict.app.name}. {dict.footer.rights}

@@ -114,7 +114,31 @@
   "profileEdit": {
     "title": "Modifier mon profil",
     "save": "Enregistrer",
-    "success": "Profil mis à jour."
+    "success": "Profil mis à jour.",
+    "avatar": "Photo de profil",
+    "avatarChange": "Changer la photo",
+    "uploading": "Téléversement…"
+  },
+  "social": {
+    "follow": "Suivre",
+    "following": "Abonné",
+    "followers": "abonnés",
+    "follows": "abonnements",
+    "like": "J'aime",
+    "liked": "Aimé",
+    "likes": "j'aime",
+    "comments": "Commentaires",
+    "commentPlaceholder": "Écrire un commentaire…",
+    "send": "Publier",
+    "delete": "Supprimer",
+    "noComments": "Aucun commentaire pour le moment.",
+    "loginToComment": "Connectez-vous pour commenter.",
+    "loginToInteract": "Connectez-vous pour aimer ou suivre."
+  },
+  "terms": {
+    "title": "Conditions d'utilisation",
+    "accept": "J'accepte les conditions d'utilisation",
+    "link": "Conditions d'utilisation"
   },
   "report": {
     "button": "Signaler",

@@ -18,14 +18,15 @@ export async function updateProfile(input: ProfileUpdateInput): Promise<ActionRe
   if (!user) return { ok: false, error: 'Vous devez être connecté.' };
 
   const supabase = await createClient();
-  const { error } = await supabase
-    .from('profiles')
-    .update({
-      full_name: data.fullName,
-      bio: data.bio || null,
-      university_id: data.universityId ?? null,
-    })
-    .eq('id', user.id);
+  const patch: Record<string, unknown> = {
+    full_name: data.fullName,
+    bio: data.bio || null,
+    university_id: data.universityId ?? null,
+  };
+  // Only overwrite the avatar when a new URL is provided.
+  if (data.avatarUrl) patch.avatar_url = data.avatarUrl;
+
+  const { error } = await supabase.from('profiles').update(patch).eq('id', user.id);
 
   if (error) return { ok: false, error: 'Échec de la mise à jour du profil.' };
 

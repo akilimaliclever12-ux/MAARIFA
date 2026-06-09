@@ -19,7 +19,7 @@ export default async function ProfileEditPage({ params }: { params: Promise<{ lo
 
   const supabase = await createClient();
   const [{ data: profile }, { data: unis }] = await Promise.all([
-    supabase.from('profiles').select('full_name, bio, university_id').eq('id', user.id).single(),
+    supabase.from('profiles').select('full_name, bio, university_id, avatar_url').eq('id', user.id).single(),
     supabase.from('universities').select('id, name, acronym').order('name'),
   ]);
 
@@ -36,10 +36,12 @@ export default async function ProfileEditPage({ params }: { params: Promise<{ lo
       <h1 className="mb-6 mt-2 text-2xl font-bold text-ink">{dict.profileEdit.title}</h1>
       <ProfileForm
         dict={dict}
+        userId={user.id}
         initial={{
           fullName: profile?.full_name ?? user.fullName,
           bio: profile?.bio ?? '',
           universityId: profile?.university_id ?? '',
+          avatarUrl: profile?.avatar_url ?? '',
         }}
         universities={universities}
       />

@@ -6,6 +6,8 @@ import { createClient } from '@/lib/supabase/browser';
 import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/i18n/dictionaries';
 
+// (terms acceptance is required client-side before signup)
+
 export function SignupForm({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -13,10 +15,15 @@ export function SignupForm({ locale, dict }: { locale: Locale; dict: Dictionary 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [accepted, setAccepted] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    if (!accepted) {
+      setError(dict.terms.accept);
+      return;
+    }
     setLoading(true);
 
     const supabase = createClient();
@@ -61,6 +68,25 @@ export function SignupForm({ locale, dict }: { locale: Locale; dict: Dictionary 
         required
         minLength={6}
       />
+
+      <label className="flex items-start gap-2 text-sm text-ink">
+        <input
+          type="checkbox"
+          checked={accepted}
+          onChange={(e) => setAccepted(e.target.checked)}
+          className="mt-1"
+        />
+        <span>
+          {dict.terms.accept}{' '}
+          <Link
+            href={`/${locale}/conditions`}
+            target="_blank"
+            className="text-lake hover:underline"
+          >
+            ({dict.terms.link})
+          </Link>
+        </span>
+      </label>
 
       {error && <p className="text-sm text-clay">{error}</p>}
 
