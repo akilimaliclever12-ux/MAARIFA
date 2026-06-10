@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createHash } from 'node:crypto';
 import { createClient } from '@/lib/supabase/server';
-import { createAdminClient } from '@/lib/supabase/admin';
 
 interface PubFile {
   storage_path: string;
@@ -45,9 +44,10 @@ export async function GET(
   // Count the download (RPC is SECURITY DEFINER; captures auth.uid() if present).
   await supabase.rpc('increment_download', { p_publication_id: id, p_ip_hash: ipHash });
 
-  // Generate a signed URL with the service role (reliable for the private bucket).
-  const admin = createAdminClient();
-  const { data: signed, error } = await admin.storage
+  // Sign the URL with the session/anon client. The "pub_select_published"
+  // storage policy (docs/14) lets anyone read files of published publications,
+  // so no service-role key is needed.
+  const { data: signed, error } = await supabase.storage
     .from('publications')
     .createSignedUrl(primary.storage_path, 120, { download: primary.file_name });
 
