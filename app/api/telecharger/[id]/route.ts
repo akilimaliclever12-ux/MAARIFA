@@ -9,8 +9,8 @@ interface PubFile {
 }
 
 // GET /api/telecharger/<publicationId>
-// Counts the download, then 307-redirects to a short-lived signed URL that
-// forces a file download. Works for anonymous and authenticated users.
+// Requires a logged-in user. Counts the download, then 307-redirects to a
+// short-lived signed URL that forces a file download.
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
@@ -18,6 +18,16 @@ export async function GET(
   const { id } = await params;
 
   const supabase = await createClient();
+
+  // Downloads are restricted to authenticated users.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    // Send logged-out visitors to login (middleware localizes /connexion).
+    return NextResponse.redirect(new URL('/connexion', _req.url), 307);
+  }
+
   const { data: pub } = await supabase
     .from('publications')
     .select('id, status, publication_files ( storage_path, file_name, is_primary )')

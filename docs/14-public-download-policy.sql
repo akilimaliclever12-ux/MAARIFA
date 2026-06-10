@@ -1,15 +1,20 @@
 -- =============================================================
--- Maarifa — Allow downloads of PUBLISHED publications without the
--- service-role key. Run once in the Supabase SQL Editor.
+-- Maarifa — Allow LOGGED-IN users to download PUBLISHED publications
+-- without the service-role key. Run once in the Supabase SQL Editor.
+-- (Safe to re-run: drops the policy first.)
 --
--- Adds a storage SELECT policy: anyone may read an object in the
--- `publications` bucket IF it belongs to a published publication. Drafts /
--- pending files stay private (only owner or staff). This lets the app sign
--- download URLs with the anon/session client — no service-role key needed.
+-- A storage SELECT policy: an AUTHENTICATED user may read an object in the
+-- `publications` bucket IF it belongs to a published publication. Anonymous
+-- (logged-out) users cannot read/download. Drafts/pending stay private to
+-- owner/staff via the existing policy. This lets the app sign download URLs
+-- with the session client — no service-role key needed.
 -- =============================================================
+
+drop policy if exists "pub_select_published" on storage.objects;
 
 create policy "pub_select_published"
   on storage.objects for select
+  to authenticated
   using (
     bucket_id = 'publications'
     and exists (
@@ -21,8 +26,6 @@ create policy "pub_select_published"
     )
   );
 
--- Note: this is an additional permissive policy. The existing owner/staff
--- SELECT policy (from 11-storage-setup.sql) still applies for unpublished files.
 -- =============================================================
 -- END
 -- =============================================================

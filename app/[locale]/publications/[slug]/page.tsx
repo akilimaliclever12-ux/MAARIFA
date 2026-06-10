@@ -138,13 +138,23 @@ export default async function PublicationDetailPage({
       )}
 
       <div className="flex flex-wrap gap-3">
-        {/* Plain anchors → no JS needed (low-bandwidth friendly). */}
-        <a
-          href={`/api/telecharger/${pub.id}`}
-          className="rounded-md bg-lake px-4 py-2 font-medium text-white hover:bg-lake-dark"
-        >
-          {dict.publication.download}
-        </a>
+        {/* Plain anchors → no JS needed (low-bandwidth friendly). Download is
+            restricted to logged-in users; logged-out visitors go to login. */}
+        {user ? (
+          <a
+            href={`/api/telecharger/${pub.id}`}
+            className="rounded-md bg-lake px-4 py-2 font-medium text-white hover:bg-lake-dark"
+          >
+            {dict.publication.download}
+          </a>
+        ) : (
+          <a
+            href={`/${locale}/connexion`}
+            className="rounded-md bg-lake px-4 py-2 font-medium text-white hover:bg-lake-dark"
+          >
+            {dict.publication.loginToDownload}
+          </a>
+        )}
         <a
           href={waHref}
           target="_blank"

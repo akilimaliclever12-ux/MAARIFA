@@ -49,6 +49,7 @@
   },
   "publication": {
     "download": "Télécharger",
+    "loginToDownload": "Se connecter pour télécharger",
     "share": "Partager sur WhatsApp",
     "save": "Enregistrer",
     "saved": "Enregistré",
