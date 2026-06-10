@@ -18,6 +18,8 @@ export type PublicationStatus = 'draft' | 'pending' | 'published' | 'rejected';
 
 export type LanguageCode = 'fr' | 'en' | 'sw' | 'other';
 
+export type Alignment = 'left' | 'center' | 'right' | 'justify';
+
 export interface ProfileRow {
   id: string;
   full_name: string;
@@ -55,6 +57,7 @@ export interface PublicationRow {
   title: string;
   slug: string;
   abstract: string | null;
+  abstract_align: Alignment;
   type: PublicationType;
   university_id: string | null;
   faculty_id: string | null;

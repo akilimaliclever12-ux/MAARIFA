@@ -4,7 +4,15 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/browser';
 import { createPublication } from '@/app/actions/publications';
-import { PUBLICATION_TYPES, LANGUAGES, MAX_PDF_BYTES } from '@/lib/validation/publication';
+import {
+  PUBLICATION_TYPES,
+  LANGUAGES,
+  MAX_PDF_BYTES,
+  ALIGNMENTS,
+  MAX_ABSTRACT_WORDS,
+  countWords,
+  type Alignment,
+} from '@/lib/validation/publication';
 import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/i18n/dictionaries';
 
@@ -27,6 +35,7 @@ export function PublishForm({
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState('');
   const [abstract, setAbstract] = useState('');
+  const [abstractAlign, setAbstractAlign] = useState<Alignment>('left');
   const [type, setType] = useState<(typeof PUBLICATION_TYPES)[number]>('memoire');
   const [universityId, setUniversityId] = useState('');
   const [categoryId, setCategoryId] = useState('');
@@ -44,6 +53,7 @@ export function PublishForm({
     if (!file) return setError(dict.publish.errorFileRequired);
     if (file.type !== 'application/pdf') return setError(dict.publish.errorFileType);
     if (file.size > MAX_PDF_BYTES) return setError(dict.publish.errorFileSize);
+    if (countWords(abstract) > MAX_ABSTRACT_WORDS) return setError(dict.publish.abstractTooLong);
     if (!attestation) return setError(dict.publish.attestation);
 
     setBusy(true);
@@ -63,6 +73,7 @@ export function PublishForm({
     const result = await createPublication({
       title,
       abstract,
+      abstractAlign,
       type,
       universityId: universityId || undefined,
       categoryId: categoryId || undefined,
@@ -117,13 +128,39 @@ export function PublishForm({
         />
       </Field>
 
-      <Field label={dict.publish.abstractLabel}>
+      <Field label={dict.publish.abstractLabel} help={dict.publish.abstractLimit}>
+        {/* Alignment toggle */}
+        <div className="mb-2 flex flex-wrap gap-1" role="group" aria-label={dict.publish.alignment}>
+          {ALIGNMENTS.map((a) => (
+            <button
+              key={a}
+              type="button"
+              onClick={() => setAbstractAlign(a)}
+              aria-pressed={abstractAlign === a}
+              className={`rounded-md border px-2.5 py-1 text-xs ${
+                abstractAlign === a
+                  ? 'border-lake bg-lake/10 font-medium text-lake'
+                  : 'border-stone/30 text-stone hover:bg-mist'
+              }`}
+            >
+              {alignLabel(a, dict)}
+            </button>
+          ))}
+        </div>
         <textarea
           value={abstract}
           onChange={(e) => setAbstract(e.target.value)}
-          rows={4}
+          rows={5}
+          style={{ textAlign: abstractAlign }}
           className={inputClass}
         />
+        <span
+          className={`mt-1 block text-xs ${
+            countWords(abstract) > MAX_ABSTRACT_WORDS ? 'text-clay' : 'text-stone'
+          }`}
+        >
+          {countWords(abstract)} / {MAX_ABSTRACT_WORDS} {dict.publish.words}
+        </span>
       </Field>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -245,6 +282,16 @@ function Field({
       {help && <span className="mt-1 block text-xs text-stone">{help}</span>}
     </label>
   );
+}
+
+function alignLabel(a: Alignment, dict: Dictionary): string {
+  const map: Record<Alignment, string> = {
+    left: dict.publish.alignLeft,
+    center: dict.publish.alignCenter,
+    right: dict.publish.alignRight,
+    justify: dict.publish.alignJustify,
+  };
+  return map[a];
 }
 
 function splitList(value: string, sep: string): string[] {

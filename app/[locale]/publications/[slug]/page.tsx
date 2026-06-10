@@ -19,7 +19,7 @@ interface CommentRow {
 }
 
 const SELECT =
-  'id, title, slug, abstract, type, year, language, view_count, download_count, status, ' +
+  'id, title, slug, abstract, abstract_align, type, year, language, view_count, download_count, status, ' +
   'universities ( name, acronym ), profiles!publications_owner_id_fkey ( full_name, slug )';
 
 async function getPublication(slug: string) {
@@ -133,7 +133,9 @@ export default async function PublicationDetailPage({
           <h2 className="mb-1 text-sm font-semibold uppercase tracking-wide text-stone">
             {dict.publication.abstract}
           </h2>
-          <p className="whitespace-pre-line text-ink">{pub.abstract}</p>
+          <p className="whitespace-pre-line text-ink" style={{ textAlign: pub.abstract_align }}>
+            {pub.abstract}
+          </p>
         </section>
       )}
 

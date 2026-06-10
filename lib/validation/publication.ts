@@ -13,7 +13,17 @@ export const PUBLICATION_TYPES = [
 
 export const LANGUAGES = ['fr', 'en', 'sw', 'other'] as const;
 
+export const ALIGNMENTS = ['left', 'center', 'right', 'justify'] as const;
+export type Alignment = (typeof ALIGNMENTS)[number];
+
 export const MAX_PDF_BYTES = 25 * 1024 * 1024; // 25 MB
+export const MAX_ABSTRACT_WORDS = 100;
+
+// Count words for the summary limit (whitespace-separated).
+export function countWords(text: string): number {
+  const t = text.trim();
+  return t ? t.split(/\s+/).length : 0;
+}
 
 // Empty string from a <select>/<input> becomes undefined, then null in the action.
 const optionalUuid = z
@@ -24,7 +34,14 @@ const optionalUuid = z
 
 export const publicationCreateSchema = z.object({
   title: z.string().trim().min(3, 'Titre trop court').max(300),
-  abstract: z.string().trim().max(5000).optional().or(z.literal('')),
+  abstract: z
+    .string()
+    .trim()
+    .max(5000)
+    .refine((v) => countWords(v) <= MAX_ABSTRACT_WORDS, `Le résumé est limité à ${MAX_ABSTRACT_WORDS} mots.`)
+    .optional()
+    .or(z.literal('')),
+  abstractAlign: z.enum(ALIGNMENTS).default('left'),
   type: z.enum(PUBLICATION_TYPES),
   universityId: optionalUuid,
   categoryId: optionalUuid,

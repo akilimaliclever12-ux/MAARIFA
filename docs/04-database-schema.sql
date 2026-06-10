@@ -153,6 +153,7 @@ create table if not exists public.publications (
   title            text not null,
   slug             text not null unique,
   abstract         text,
+  abstract_align   text not null default 'left' check (abstract_align in ('left','center','right','justify')),
   type             text not null
                    check (type in ('memoire','these','article','rapport','etude_cas','projet_innovation','publication','autre')),
   university_id    uuid references public.universities(id) on delete set null,
