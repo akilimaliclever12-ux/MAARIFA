@@ -16,7 +16,7 @@ import { getSiteUrl } from '@/lib/site-url';
 const SITE_URL = getSiteUrl();
 
 // Where new-submission notifications go. Set ADMIN_NOTIFY_EMAIL in env.
-const ADMIN_NOTIFY_EMAIL = process.env.ADMIN_NOTIFY_EMAIL ?? 'merveilleneema63@gmail.com';
+const ADMIN_NOTIFY_EMAIL = process.env.ADMIN_NOTIFY_EMAIL ?? 'akilimaliclever12@gmail.com';
 
 type SupabaseServer = Awaited<ReturnType<typeof createClient>>;
 
