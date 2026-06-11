@@ -9,10 +9,14 @@ import {
   sendEmail,
   emailPublicationApproved,
   emailPublicationRejected,
+  emailNewPendingPublication,
 } from '@/lib/email/resend';
 import { getSiteUrl } from '@/lib/site-url';
 
 const SITE_URL = getSiteUrl();
+
+// Where new-submission notifications go. Set ADMIN_NOTIFY_EMAIL in env.
+const ADMIN_NOTIFY_EMAIL = process.env.ADMIN_NOTIFY_EMAIL ?? 'merveilleneema63@gmail.com';
 
 type SupabaseServer = Awaited<ReturnType<typeof createClient>>;
 
@@ -120,7 +124,16 @@ export async function createPublication(input: PublicationCreateInput): Promise<
   await supabase.from('publication_authors').insert(authors);
 
   revalidatePath('/[locale]/espace', 'page');
-  if (data.status === 'pending') revalidatePath('/[locale]/admin/moderation', 'page');
+  if (data.status === 'pending') {
+    revalidatePath('/[locale]/admin/moderation', 'page');
+    // Notify the moderator that something is waiting (no-ops if email not configured).
+    const tpl = emailNewPendingPublication({
+      title: data.title,
+      authorName: user.fullName,
+      moderationUrl: `${SITE_URL}/fr/admin/moderation`,
+    });
+    await sendEmail({ to: ADMIN_NOTIFY_EMAIL, ...tpl });
+  }
 
   return { ok: true, slug: pub.slug };
 }

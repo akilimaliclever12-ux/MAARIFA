@@ -56,6 +56,22 @@ export function emailPublicationApproved(p: { fullName: string; title: string; u
   };
 }
 
+export function emailNewPendingPublication(p: {
+  title: string;
+  authorName: string;
+  moderationUrl: string;
+}) {
+  return {
+    subject: `Nouvelle publication à modérer : ${p.title}`,
+    html: shell(
+      'Nouvelle soumission en attente',
+      `<p>Une nouvelle publication attend votre modération :</p>
+       <p><strong>${escape(p.title)}</strong><br/>${escape(p.authorName)}</p>
+       <p style="margin:20px 0">${btn(p.moderationUrl, 'Examiner la file de modération')}</p>`,
+    ),
+  };
+}
+
 export function emailPublicationRejected(p: { fullName: string; title: string; reason: string }) {
   return {
     subject: `Votre publication nécessite des modifications : ${p.title}`,
