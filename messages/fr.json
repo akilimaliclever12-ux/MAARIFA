@@ -69,6 +69,10 @@
     "title": "Publier un travail",
     "fileLabel": "Fichier PDF (max 25 Mo)",
     "fileHelp": "Seuls les fichiers PDF sont acceptés.",
+    "replaceFile": "Remplacer le PDF (optionnel)",
+    "currentFile": "Fichier actuel",
+    "editTitle": "Modifier la publication",
+    "saveChanges": "Enregistrer les modifications",
     "titleLabel": "Titre",
     "abstractLabel": "Résumé",
     "abstractLimit": "100 mots maximum",
@@ -103,7 +107,9 @@
     "editProfile": "Modifier mon profil",
     "moderation": "Modération",
     "noPublications": "Vous n'avez pas encore de publication.",
-    "openModeration": "File de modération"
+    "openModeration": "File de modération",
+    "edit": "Modifier",
+    "rejectionReason": "Motif du rejet"
   },
   "status": {
     "draft": "Brouillon",

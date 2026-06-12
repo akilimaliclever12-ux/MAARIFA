@@ -13,6 +13,7 @@ interface MyPub {
   slug: string;
   type: PublicationType;
   status: PublicationStatus;
+  rejection_reason: string | null;
   created_at: string;
 }
 
@@ -27,7 +28,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   const supabase = await createClient();
   const { data } = await supabase
     .from('publications')
-    .select('id, title, slug, type, status, created_at')
+    .select('id, title, slug, type, status, rejection_reason, created_at')
     .eq('owner_id', user.id)
     .order('created_at', { ascending: false });
 
@@ -79,9 +80,22 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
                 <div className="min-w-0">
                   <p className="truncate font-medium text-ink">{p.title}</p>
                   <p className="text-xs capitalize text-stone">{p.type.replace('_', ' ')}</p>
+                  {p.status === 'rejected' && p.rejection_reason && (
+                    <p className="mt-1 text-xs text-clay">
+                      {dict.dashboard.rejectionReason}: {p.rejection_reason}
+                    </p>
+                  )}
                 </div>
                 <div className="flex shrink-0 items-center gap-3">
                   <StatusBadge status={p.status} dict={dict} />
+                  {(p.status === 'draft' || p.status === 'rejected') && (
+                    <Link
+                      href={`/${locale}/espace/publications/${p.id}/modifier`}
+                      className="text-sm font-medium text-lake hover:underline"
+                    >
+                      {dict.dashboard.edit}
+                    </Link>
+                  )}
                   {p.status === 'published' && (
                     <Link
                       href={`/${locale}/publications/${p.slug}`}

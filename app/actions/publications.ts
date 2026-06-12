@@ -3,7 +3,12 @@
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { getCurrentUser, isStaffRole } from '@/lib/auth/session';
-import { publicationCreateSchema, type PublicationCreateInput } from '@/lib/validation/publication';
+import {
+  publicationCreateSchema,
+  publicationUpdateSchema,
+  type PublicationCreateInput,
+  type PublicationUpdateInput,
+} from '@/lib/validation/publication';
 import { publicationSlug, slugify } from '@/lib/utils/slug';
 import {
   sendEmail,
@@ -137,6 +142,123 @@ export async function createPublication(input: PublicationCreateInput): Promise<
   }
 
   return { ok: true, slug: pub.slug };
+}
+
+/**
+ * Edit an existing publication the user owns (draft or rejected only), then
+ * keep it as a draft or submit it for moderation. Runs under the owner's RLS.
+ */
+export async function updatePublication(input: PublicationUpdateInput): Promise<ActionResult> {
+  const parsed = publicationUpdateSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? 'Données invalides.' };
+  }
+  const data = parsed.data;
+
+  const user = await getCurrentUser();
+  if (!user) return { ok: false, error: 'Vous devez être connecté.' };
+
+  const supabase = await createClient();
+
+  // Verify ownership + that it's still editable.
+  const { data: existing } = await supabase
+    .from('publications')
+    .select('id, owner_id, status, slug')
+    .eq('id', data.id)
+    .maybeSingle();
+  if (!existing || existing.owner_id !== user.id) {
+    return { ok: false, error: 'Action non autorisée.' };
+  }
+  if (!['draft', 'rejected'].includes(existing.status)) {
+    return { ok: false, error: 'Cette publication ne peut plus être modifiée.' };
+  }
+
+  // 1. Update the main row.
+  const patch: Record<string, unknown> = {
+    title: data.title,
+    abstract: data.abstract || null,
+    abstract_align: data.abstractAlign,
+    type: data.type,
+    university_id: data.universityId ?? null,
+    category_id: data.categoryId ?? null,
+    year: data.year ?? null,
+    language: data.language,
+    status: data.status,
+    rejection_reason: null,
+    published_at: null,
+  };
+  if (data.thumbnailUrl) patch.thumbnail_url = data.thumbnailUrl;
+
+  const { error: upErr } = await supabase.from('publications').update(patch).eq('id', data.id);
+  if (upErr) return { ok: false, error: "Échec de l'enregistrement." };
+
+  // 2. Replace the primary file if a new PDF was uploaded.
+  if (data.storagePath && data.fileName && data.fileSize) {
+    const { data: oldFile } = await supabase
+      .from('publication_files')
+      .select('id, storage_path')
+      .eq('publication_id', data.id)
+      .eq('is_primary', true)
+      .maybeSingle();
+    if (oldFile) {
+      await supabase
+        .from('publication_files')
+        .update({ storage_path: data.storagePath, file_name: data.fileName, file_size: data.fileSize })
+        .eq('id', oldFile.id);
+      if (oldFile.storage_path && oldFile.storage_path !== data.storagePath) {
+        await supabase.storage.from('publications').remove([oldFile.storage_path]);
+      }
+    } else {
+      await supabase.from('publication_files').insert({
+        publication_id: data.id,
+        storage_path: data.storagePath,
+        file_name: data.fileName,
+        file_size: data.fileSize,
+        is_primary: true,
+      });
+    }
+  }
+
+  // 3. Replace keywords.
+  await supabase.from('publication_keywords').delete().eq('publication_id', data.id);
+  if (data.keywords.length > 0) {
+    const rows = data.keywords.map((name) => ({ name, slug: slugify(name) }));
+    await supabase.from('keywords').upsert(rows, { onConflict: 'slug', ignoreDuplicates: true });
+    const { data: kw } = await supabase
+      .from('keywords')
+      .select('id, slug')
+      .in('slug', rows.map((r) => r.slug));
+    if (kw && kw.length > 0) {
+      await supabase
+        .from('publication_keywords')
+        .insert(kw.map((k) => ({ publication_id: data.id, keyword_id: k.id })));
+    }
+  }
+
+  // 4. Replace authors (owner first, then co-authors).
+  await supabase.from('publication_authors').delete().eq('publication_id', data.id);
+  await supabase.from('publication_authors').insert([
+    { publication_id: data.id, profile_id: user.id, author_name: user.fullName, position: 1 },
+    ...data.coAuthors.map((name, i) => ({
+      publication_id: data.id,
+      profile_id: null,
+      author_name: name,
+      position: i + 2,
+    })),
+  ]);
+
+  revalidatePath('/[locale]/espace', 'page');
+  if (data.status === 'pending') {
+    revalidatePath('/[locale]/admin/moderation', 'page');
+    const tpl = emailNewPendingPublication({
+      title: data.title,
+      authorName: user.fullName,
+      moderationUrl: `${SITE_URL}/fr/admin/moderation`,
+    });
+    await sendEmail({ to: ADMIN_NOTIFY_EMAIL, ...tpl });
+  }
+
+  return { ok: true, slug: existing.slug };
 }
 
 /** Approve a pending publication. Staff only. */

@@ -69,6 +69,10 @@
     "title": "Publish a work",
     "fileLabel": "PDF file (max 25 MB)",
     "fileHelp": "Only PDF files are accepted.",
+    "replaceFile": "Replace PDF (optional)",
+    "currentFile": "Current file",
+    "editTitle": "Edit publication",
+    "saveChanges": "Save changes",
     "titleLabel": "Title",
     "abstractLabel": "Abstract",
     "abstractLimit": "100 words maximum",
@@ -103,7 +107,9 @@
     "editProfile": "Edit my profile",
     "moderation": "Moderation",
     "noPublications": "You don't have any publications yet.",
-    "openModeration": "Moderation queue"
+    "openModeration": "Moderation queue",
+    "edit": "Edit",
+    "rejectionReason": "Rejection reason"
   },
   "status": {
     "draft": "Draft",

@@ -67,3 +67,33 @@ export const publicationCreateSchema = z.object({
 });
 
 export type PublicationCreateInput = z.input<typeof publicationCreateSchema>;
+
+// Editing an existing publication. File fields are optional (only present when
+// the author replaces the PDF). No attestation re-prompt.
+export const publicationUpdateSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string().trim().min(3, 'Titre trop court').max(300),
+  abstract: z
+    .string()
+    .trim()
+    .max(5000)
+    .refine((v) => countWords(v) <= MAX_ABSTRACT_WORDS, `Le résumé est limité à ${MAX_ABSTRACT_WORDS} mots.`)
+    .optional()
+    .or(z.literal('')),
+  abstractAlign: z.enum(ALIGNMENTS).default('left'),
+  type: z.enum(PUBLICATION_TYPES),
+  universityId: optionalUuid,
+  categoryId: optionalUuid,
+  year: z.number().int().min(1950).max(2100).optional().nullable(),
+  language: z.enum(LANGUAGES).default('fr'),
+  keywords: z.array(z.string().trim().min(1).max(60)).max(12).default([]),
+  coAuthors: z.array(z.string().trim().min(1).max(120)).max(20).default([]),
+  status: z.enum(['draft', 'pending']),
+  // Optional: present only when the author uploads a replacement PDF.
+  storagePath: z.string().min(1).optional(),
+  fileName: z.string().min(1).max(255).optional(),
+  fileSize: z.number().int().positive().max(MAX_PDF_BYTES).optional(),
+  thumbnailUrl: z.string().url().max(500).optional().or(z.literal('')),
+});
+
+export type PublicationUpdateInput = z.input<typeof publicationUpdateSchema>;
