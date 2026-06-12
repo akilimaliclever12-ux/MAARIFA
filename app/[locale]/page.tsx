@@ -15,7 +15,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const { data } = await supabase
     .from('publications')
     .select(
-      'id, title, slug, abstract, type, year, view_count, download_count, status, ' +
+      'id, title, slug, abstract, thumbnail_url, type, year, view_count, download_count, status, ' +
         'universities ( name, acronym ), profiles!publications_owner_id_fkey ( full_name, slug )',
     )
     .eq('status', 'published')

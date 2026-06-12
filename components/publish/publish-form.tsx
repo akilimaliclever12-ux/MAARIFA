@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/browser';
 import { createPublication } from '@/app/actions/publications';
+import { generatePdfThumbnail } from '@/lib/pdf/thumbnail';
 import {
   PUBLICATION_TYPES,
   LANGUAGES,
@@ -69,6 +70,20 @@ export function PublishForm({
       return setError(dict.auth.errorGeneric);
     }
 
+    // 1b. Generate a first-page thumbnail (best-effort) and upload it. If this
+    // fails, we publish without one and the card shows a branded placeholder.
+    let thumbnailUrl: string | undefined;
+    const thumb = await generatePdfThumbnail(file);
+    if (thumb) {
+      const thumbPath = `${userId}/${crypto.randomUUID()}.jpg`;
+      const { error: tErr } = await supabase.storage
+        .from('thumbnails')
+        .upload(thumbPath, thumb, { contentType: 'image/jpeg', upsert: false });
+      if (!tErr) {
+        thumbnailUrl = supabase.storage.from('thumbnails').getPublicUrl(thumbPath).data.publicUrl;
+      }
+    }
+
     // 2. Persist metadata via the server action.
     const result = await createPublication({
       title,
@@ -86,6 +101,7 @@ export function PublishForm({
       storagePath,
       fileName: file.name,
       fileSize: file.size,
+      thumbnailUrl,
     });
 
     if (!result.ok) {

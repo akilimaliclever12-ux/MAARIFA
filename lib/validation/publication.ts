@@ -63,6 +63,7 @@ export const publicationCreateSchema = z.object({
   storagePath: z.string().min(1),
   fileName: z.string().min(1).max(255),
   fileSize: z.number().int().positive().max(MAX_PDF_BYTES),
+  thumbnailUrl: z.string().url().max(500).optional().or(z.literal('')),
 });
 
 export type PublicationCreateInput = z.input<typeof publicationCreateSchema>;

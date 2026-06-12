@@ -58,6 +58,7 @@ export interface PublicationRow {
   slug: string;
   abstract: string | null;
   abstract_align: Alignment;
+  thumbnail_url: string | null;
   type: PublicationType;
   university_id: string | null;
   faculty_id: string | null;

@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: 'Publications' };
 
 const PAGE_SIZE = 24;
 const SELECT =
-  'id, title, slug, abstract, type, year, view_count, download_count, status, ' +
+  'id, title, slug, abstract, thumbnail_url, type, year, view_count, download_count, status, ' +
   'universities ( name, acronym ), profiles!publications_owner_id_fkey ( full_name, slug )';
 
 type SearchParams = Record<string, string | string[] | undefined>;

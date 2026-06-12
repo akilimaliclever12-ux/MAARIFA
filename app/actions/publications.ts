@@ -67,6 +67,7 @@ export async function createPublication(input: PublicationCreateInput): Promise<
       slug,
       abstract: data.abstract || null,
       abstract_align: data.abstractAlign,
+      thumbnail_url: data.thumbnailUrl || null,
       type: data.type,
       university_id: data.universityId ?? null,
       category_id: data.categoryId ?? null,
