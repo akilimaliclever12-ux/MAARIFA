@@ -143,12 +143,22 @@ export default async function PublicationDetailPage({
         {/* Plain anchors → no JS needed (low-bandwidth friendly). Download is
             restricted to logged-in users; logged-out visitors go to login. */}
         {user ? (
-          <a
-            href={`/api/telecharger/${pub.id}`}
-            className="rounded-md bg-lake px-4 py-2 font-medium text-white hover:bg-lake-dark"
-          >
-            {dict.publication.download}
-          </a>
+          <>
+            <a
+              href={`/api/telecharger/${pub.id}?view=1`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-md bg-lake px-4 py-2 font-medium text-white hover:bg-lake-dark"
+            >
+              {dict.publication.read}
+            </a>
+            <a
+              href={`/api/telecharger/${pub.id}`}
+              className="rounded-md border border-lake px-4 py-2 font-medium text-lake hover:bg-lake/5"
+            >
+              {dict.publication.download}
+            </a>
+          </>
         ) : (
           <a
             href={`/${locale}/connexion`}

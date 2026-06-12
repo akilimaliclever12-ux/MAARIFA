@@ -8,14 +8,16 @@ interface PubFile {
   is_primary: boolean;
 }
 
-// GET /api/telecharger/<publicationId>
-// Requires a logged-in user. Counts the download, then 307-redirects to a
-// short-lived signed URL that forces a file download.
+// GET /api/telecharger/<publicationId>[?view=1]
+// Requires a logged-in user. Counts the access, then 307-redirects to a
+// short-lived signed URL. Default forces a download; ?view=1 opens the PDF
+// inline in the browser (read online).
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
+  const inline = _req.nextUrl.searchParams.get('view') === '1';
 
   const supabase = await createClient();
 
@@ -55,11 +57,12 @@ export async function GET(
   await supabase.rpc('increment_download', { p_publication_id: id, p_ip_hash: ipHash });
 
   // Sign the URL with the session/anon client. The "pub_select_published"
-  // storage policy (docs/14) lets anyone read files of published publications,
-  // so no service-role key is needed.
+  // storage policy (docs/14) lets logged-in users read files of published
+  // publications, so no service-role key is needed.
+  // download:false → served inline (browser PDF viewer); otherwise attachment.
   const { data: signed, error } = await supabase.storage
     .from('publications')
-    .createSignedUrl(primary.storage_path, 120, { download: primary.file_name });
+    .createSignedUrl(primary.storage_path, 120, inline ? {} : { download: primary.file_name });
 
   if (error || !signed) {
     return NextResponse.json({ error: 'Lien de téléchargement indisponible.' }, { status: 500 });
