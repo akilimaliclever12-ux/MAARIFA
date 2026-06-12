@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/browser';
 import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/i18n/dictionaries';
@@ -9,6 +10,7 @@ import type { Dictionary } from '@/i18n/dictionaries';
 // (terms acceptance is required client-side before signup)
 
 export function SignupForm({ locale, dict }: { locale: Locale; dict: Dictionary }) {
+  const router = useRouter();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -28,7 +30,7 @@ export function SignupForm({ locale, dict }: { locale: Locale; dict: Dictionary 
 
     const supabase = createClient();
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin;
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -40,6 +42,15 @@ export function SignupForm({ locale, dict }: { locale: Locale; dict: Dictionary 
     if (error) {
       setError(dict.auth.errorGeneric);
       setLoading(false);
+      return;
+    }
+
+    // With email confirmation disabled, signUp returns a session immediately —
+    // send them straight into the app. (Falls back to the "check email" notice
+    // if confirmation is ever re-enabled, since session is then null.)
+    if (data.session) {
+      router.push(`/${locale}/espace`);
+      router.refresh();
       return;
     }
 
