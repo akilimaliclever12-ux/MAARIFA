@@ -7,6 +7,7 @@ import { getCurrentUser, isStaffRole } from '@/lib/auth/session';
 import { ReportDialog } from '@/components/report-dialog';
 import { LikeButton } from '@/components/social/like-button';
 import { Comments, type CommentItem } from '@/components/social/comments';
+import { ViewCounter } from '@/components/view-counter';
 import { getSiteUrl } from '@/lib/site-url';
 import type { PublicationWithRelations } from '@/types/db';
 
@@ -112,6 +113,7 @@ export default async function PublicationDetailPage({
 
   return (
     <article className="mx-auto max-w-3xl space-y-6 py-4">
+      <ViewCounter publicationId={pub.id} />
       <header className="space-y-2">
         <div className="flex flex-wrap items-center gap-2 text-xs text-stone">
           <span className="rounded bg-mist px-2 py-0.5 capitalize">
