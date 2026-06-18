@@ -37,6 +37,8 @@
     "checkEmail": "Vérifiez votre boîte e-mail pour confirmer votre compte.",
     "errorInvalid": "Identifiants invalides. Réessayez.",
     "errorGeneric": "Une erreur est survenue. Réessayez.",
+    "emailExists": "Cet e-mail a déjà un compte. Connectez-vous plutôt (lien ci-dessous).",
+    "weakPassword": "Mot de passe trop court (au moins 6 caractères).",
     "forgotTitle": "Réinitialiser le mot de passe",
     "forgotInstruction": "Entrez votre e-mail. Nous vous enverrons un lien pour réinitialiser votre mot de passe.",
     "sendResetLink": "Envoyer le lien",

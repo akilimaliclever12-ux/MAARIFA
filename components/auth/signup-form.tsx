@@ -40,7 +40,15 @@ export function SignupForm({ locale, dict }: { locale: Locale; dict: Dictionary 
     });
 
     if (error) {
-      setError(dict.auth.errorGeneric);
+      const code = (error as { code?: string }).code ?? '';
+      const msg = error.message?.toLowerCase() ?? '';
+      if (code === 'user_already_exists' || msg.includes('already registered')) {
+        setError(dict.auth.emailExists);
+      } else if (code === 'weak_password' || msg.includes('password')) {
+        setError(dict.auth.weakPassword);
+      } else {
+        setError(dict.auth.errorGeneric);
+      }
       setLoading(false);
       return;
     }
