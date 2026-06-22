@@ -4,8 +4,10 @@
 export async function generatePdfThumbnail(file: File, maxWidth = 600): Promise<Blob | null> {
   try {
     const pdfjs = await import('pdfjs-dist');
-    // Match the worker to the installed version (loaded from CDN at upload time).
-    pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+    // Self-hosted worker (copied from pdfjs-dist into /public) — reliable on
+    // weak connections, no external CDN. Re-copy this file if pdfjs-dist is
+    // upgraded so the worker version matches the library.
+    pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
     const data = new Uint8Array(await file.arrayBuffer());
     const doc = await pdfjs.getDocument({ data }).promise;
