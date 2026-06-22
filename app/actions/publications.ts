@@ -353,3 +353,76 @@ export async function getReviewUrl(storagePath: string): Promise<ActionResult & 
 
   return { ok: true, url: data.signedUrl };
 }
+
+/**
+ * Signed URL of a publication's primary PDF, for the owner or staff to
+ * regenerate a missing thumbnail. Does NOT count as a download.
+ */
+export async function getThumbnailSourceUrl(
+  publicationId: string,
+): Promise<ActionResult & { url?: string }> {
+  const user = await getCurrentUser();
+  if (!user) return { ok: false, error: 'Non autorisé.' };
+
+  const supabase = await createClient();
+  const { data: pub } = await supabase
+    .from('publications')
+    .select('owner_id, publication_files ( storage_path, is_primary )')
+    .eq('id', publicationId)
+    .maybeSingle();
+
+  const row = pub as
+    | { owner_id: string; publication_files: { storage_path: string; is_primary: boolean }[] | null }
+    | null;
+  if (!row) return { ok: false, error: 'Introuvable.' };
+  if (row.owner_id !== user.id && !isStaffRole(user.role)) {
+    return { ok: false, error: 'Non autorisé.' };
+  }
+
+  const files = row.publication_files ?? [];
+  const primary = files.find((f) => f.is_primary) ?? files[0];
+  if (!primary) return { ok: false, error: 'Fichier introuvable.' };
+
+  const { data, error } = await supabase.storage
+    .from('publications')
+    .createSignedUrl(primary.storage_path, 120);
+  if (error || !data) return { ok: false, error: 'Lien indisponible.' };
+
+  return { ok: true, url: data.signedUrl };
+}
+
+/** Set a publication's thumbnail URL (owner or staff). */
+export async function setPublicationThumbnail(
+  publicationId: string,
+  thumbnailUrl: string,
+): Promise<ActionResult> {
+  const user = await getCurrentUser();
+  if (!user) return { ok: false, error: 'Non autorisé.' };
+  if (!/^https?:\/\//.test(thumbnailUrl) || thumbnailUrl.length > 500) {
+    return { ok: false, error: 'URL invalide.' };
+  }
+
+  const supabase = await createClient();
+  const { data: pub } = await supabase
+    .from('publications')
+    .select('owner_id')
+    .eq('id', publicationId)
+    .maybeSingle();
+
+  const row = pub as { owner_id: string } | null;
+  if (!row) return { ok: false, error: 'Introuvable.' };
+  if (row.owner_id !== user.id && !isStaffRole(user.role)) {
+    return { ok: false, error: 'Non autorisé.' };
+  }
+
+  const { error } = await supabase
+    .from('publications')
+    .update({ thumbnail_url: thumbnailUrl })
+    .eq('id', publicationId);
+  if (error) return { ok: false, error: 'Échec.' };
+
+  revalidatePath('/[locale]/publications/[slug]', 'page');
+  revalidatePath('/[locale]', 'page');
+  revalidatePath('/[locale]/publications', 'page');
+  return { ok: true };
+}

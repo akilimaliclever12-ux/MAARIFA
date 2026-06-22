@@ -8,6 +8,7 @@ import { ReportDialog } from '@/components/report-dialog';
 import { LikeButton } from '@/components/social/like-button';
 import { Comments, type CommentItem } from '@/components/social/comments';
 import { ViewCounter } from '@/components/view-counter';
+import { RegenerateThumbnail } from '@/components/regenerate-thumbnail';
 import { getSiteUrl } from '@/lib/site-url';
 import type { PublicationWithRelations } from '@/types/db';
 
@@ -20,7 +21,7 @@ interface CommentRow {
 }
 
 const SELECT =
-  'id, title, slug, abstract, abstract_align, type, year, language, view_count, download_count, status, ' +
+  'id, owner_id, title, slug, abstract, abstract_align, thumbnail_url, type, year, language, view_count, download_count, status, ' +
   'universities ( name, acronym ), profiles!publications_owner_id_fkey ( full_name, slug )';
 
 async function getPublication(slug: string) {
@@ -191,6 +192,10 @@ export default async function PublicationDetailPage({
         {pub.view_count} {dict.publication.views} · {pub.download_count}{' '}
         {dict.publication.downloads}
       </p>
+
+      {user && (user.id === pub.owner_id || isStaff) && !pub.thumbnail_url && (
+        <RegenerateThumbnail publicationId={pub.id} userId={user.id} dict={dict} />
+      )}
 
       <div className="border-t border-stone/10 pt-6">
         <Comments publicationId={pub.id} comments={comments} isAuthed={!!user} locale={locale} dict={dict} />

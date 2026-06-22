@@ -1,7 +1,7 @@
 // Client-only: render page 1 of a PDF File to a small JPEG Blob using pdf.js.
 // Best-effort — returns null on any failure so publishing never breaks.
 // pdf.js is dynamically imported so it only loads when a user actually uploads.
-export async function generatePdfThumbnail(file: File, maxWidth = 600): Promise<Blob | null> {
+export async function generatePdfThumbnail(file: Blob, maxWidth = 600): Promise<Blob | null> {
   try {
     const pdfjs = await import('pdfjs-dist');
     // Self-hosted worker (copied from pdfjs-dist into /public) — reliable on

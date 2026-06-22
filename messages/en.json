@@ -52,6 +52,7 @@
   "publication": {
     "download": "Download",
     "read": "Read online",
+    "regenerateThumbnail": "Regenerate thumbnail (first page)",
     "loginToDownload": "Log in to download",
     "share": "Share on WhatsApp",
     "save": "Save",

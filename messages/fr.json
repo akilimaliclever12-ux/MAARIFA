@@ -52,6 +52,7 @@
   "publication": {
     "download": "Télécharger",
     "read": "Lire en ligne",
+    "regenerateThumbnail": "Régénérer la miniature (première page)",
     "loginToDownload": "Se connecter pour télécharger",
     "share": "Partager sur WhatsApp",
     "save": "Enregistrer",
