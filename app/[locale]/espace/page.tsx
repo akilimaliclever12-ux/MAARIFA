@@ -26,13 +26,20 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   if (!user) redirect(`/${locale}/connexion`);
 
   const supabase = await createClient();
-  const { data } = await supabase
-    .from('publications')
-    .select('id, title, slug, type, status, rejection_reason, created_at')
-    .eq('owner_id', user.id)
-    .order('created_at', { ascending: false });
+  const [{ data }, { count: managedCount }] = await Promise.all([
+    supabase
+      .from('publications')
+      .select('id, title, slug, type, status, rejection_reason, created_at')
+      .eq('owner_id', user.id)
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('university_managers')
+      .select('university_id', { count: 'exact', head: true })
+      .eq('user_id', user.id),
+  ]);
 
   const pubs = (data ?? []) as MyPub[];
+  const managesUniversity = (managedCount ?? 0) > 0;
 
   return (
     <div className="space-y-6 py-4">
@@ -56,6 +63,14 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
           >
             {dict.dashboard.editProfile}
           </Link>
+          {managesUniversity && (
+            <Link
+              href={`/${locale}/espace/universite`}
+              className="rounded-md border border-lake bg-lake/10 px-3 py-2 text-sm font-medium text-lake hover:bg-lake/20"
+            >
+              {dict.uniDash.link}
+            </Link>
+          )}
           {isStaffRole(user.role) && (
             <Link
               href={`/${locale}/admin/moderation`}

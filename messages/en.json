@@ -159,6 +159,17 @@
     "accept": "I accept the terms and conditions",
     "link": "Terms and Conditions"
   },
+  "uniDash": {
+    "title": "Dashboard — University",
+    "none": "You don't manage any university yet. Contact Maarifa to activate your university's space.",
+    "works": "Published works",
+    "views": "Total views",
+    "downloads": "Downloads",
+    "recent": "Recent works",
+    "changeLogo": "Change logo",
+    "viewPublicSpace": "View public space",
+    "link": "University space"
+  },
   "universities": {
     "title": "Universities",
     "subtitle": "Browse works by university",

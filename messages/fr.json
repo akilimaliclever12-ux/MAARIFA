@@ -159,6 +159,17 @@
     "accept": "J'accepte les conditions d'utilisation",
     "link": "Conditions d'utilisation"
   },
+  "uniDash": {
+    "title": "Tableau de bord — Université",
+    "none": "Vous ne gérez aucune université pour le moment. Contactez Maarifa pour activer l'espace de votre université.",
+    "works": "Travaux publiés",
+    "views": "Vues totales",
+    "downloads": "Téléchargements",
+    "recent": "Travaux récents",
+    "changeLogo": "Changer le logo",
+    "viewPublicSpace": "Voir l'espace public",
+    "link": "Espace université"
+  },
   "universities": {
     "title": "Universités",
     "subtitle": "Explorez les travaux par université",
