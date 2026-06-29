@@ -13,7 +13,10 @@ export function ViewCounter({ publicationId }: { publicationId: string }) {
     if (counted.current) return;
     counted.current = true;
     const supabase = createClient();
-    void supabase.rpc('increment_view', { p_publication_id: publicationId });
+    // Must await/.then — supabase builders are lazy and only fire when consumed.
+    (async () => {
+      await supabase.rpc('increment_view', { p_publication_id: publicationId });
+    })();
   }, [publicationId]);
 
   return null;
