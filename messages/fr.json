@@ -159,6 +159,17 @@
     "accept": "J'accepte les conditions d'utilisation",
     "link": "Conditions d'utilisation"
   },
+  "universities": {
+    "title": "Universités",
+    "subtitle": "Explorez les travaux par université",
+    "works": "travaux",
+    "oneWork": "1 travail",
+    "manyWorks": "{count} travaux",
+    "noWorks": "Aucun travail publié pour le moment.",
+    "viewSpace": "Voir l'espace",
+    "backToAll": "← Toutes les universités",
+    "spaceOf": "Espace de"
+  },
   "report": {
     "button": "Signaler",
     "title": "Signaler cette publication",

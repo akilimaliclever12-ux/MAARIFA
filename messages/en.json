@@ -159,6 +159,17 @@
     "accept": "I accept the terms and conditions",
     "link": "Terms and Conditions"
   },
+  "universities": {
+    "title": "Universities",
+    "subtitle": "Browse works by university",
+    "works": "works",
+    "oneWork": "1 work",
+    "manyWorks": "{count} works",
+    "noWorks": "No published works yet.",
+    "viewSpace": "View space",
+    "backToAll": "← All universities",
+    "spaceOf": "Space of"
+  },
   "report": {
     "button": "Report",
     "title": "Report this publication",

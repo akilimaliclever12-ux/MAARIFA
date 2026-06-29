@@ -39,6 +39,8 @@ export interface UniversityRow {
   id: string;
   name: string;
   acronym: string | null;
+  slug: string;
+  logo_url: string | null;
   city: string;
   created_at: string;
 }
